@@ -1,7 +1,6 @@
 package net.citizensnpcs;
 
 import java.io.File;
-
 import net.citizensnpcs.api.util.DataKey;
 import net.citizensnpcs.api.util.YamlStorage;
 import net.citizensnpcs.util.Messaging;
@@ -10,7 +9,7 @@ public class Settings {
     private final YamlStorage config;
 
     public Settings(Citizens plugin) {
-        config = new YamlStorage(plugin.getDataFolder() + File.separator + "config.yml", "Citizens Configuration");
+        config = new YamlStorage(new File(plugin.getInstallDirectory(), "config.yml"), "Citizens Configuration");
     }
 
     public void load() {

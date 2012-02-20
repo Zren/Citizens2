@@ -66,6 +66,8 @@ public class Citizens extends JavaPlugin {
     private Settings config;
     private Storage saves;
     private boolean compatible;
+    private File installDirectory = new File("");
+    private File savesFile = new File("saves");
 
     private boolean suggestClosestModifier(CommandSender sender, String command, String modifier) {
         int minDist = Integer.MAX_VALUE;
@@ -158,6 +160,9 @@ public class Citizens extends JavaPlugin {
             getServer().getPluginManager().disablePlugin(this);
             return;
         }
+        
+        // Set the root folder for Citizens.
+        setInstallDirectoty(getDataFolder());
 
         // Configuration file
         config = new Settings(this);
@@ -170,10 +175,10 @@ public class Citizens extends JavaPlugin {
                         Setting.DATABASE_USERNAME.asString(), Setting.DATABASE_PASSWORD.asString());
             } catch (SQLException e) {
                 Messaging.log("Unable to connect to database, falling back to YAML");
-                saves = new YamlStorage(getDataFolder() + File.separator + "saves.yml", "Citizens NPC Storage");
+                saves = new YamlStorage(savesFile.getAbsolutePath(), "Citizens NPC Storage");
             }
         } else {
-            saves = new YamlStorage(getDataFolder() + File.separator + "saves.yml", "Citizens NPC Storage");
+            saves = new YamlStorage(savesFile.getAbsolutePath(), "Citizens NPC Storage");
         }
 
         // Register API managers
@@ -288,5 +293,22 @@ public class Citizens extends JavaPlugin {
                 ++spawned;
         }
         Messaging.log("Loaded " + created + " NPCs (" + spawned + " spawned).");
+    }
+
+    /**
+     * Set the root folder Citizens uses.
+     * @return 
+     */
+    public File getInstallDirectory() {
+        return installDirectory;
+    }
+
+    /**
+     * Set the root folder Citizens uses.
+     * @param installDirectory 
+     */
+    public void setInstallDirectoty(File installDirectory) {
+        this.installDirectory = installDirectory;
+        this.savesFile = new File(installDirectory, "saves.yml");
     }
 }
